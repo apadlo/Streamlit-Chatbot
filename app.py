@@ -33,11 +33,22 @@ if prompt := st.chat_input("Ask me anything"):
 
         # Check for specific names asking if they are gay
         names_to_check = ["Gabriel", "Orzech", "Konrad", "Konradek", "Mirek", "Miro"]
-        is_gay_question = any(name.lower() in prompt.lower() for name in names_to_check) and "gay" in prompt.lower()
+        prompt_lower = prompt.lower()
 
-        if is_gay_question:
-            # Return the fixed response
+        # Check for English question
+        is_gay_question_en = any(name.lower() in prompt_lower for name in names_to_check) and "gay" in prompt_lower
+
+        # Check for Polish question (czy...jest gejem/pederastą or similar variations)
+        is_gay_question_pl = any(name.lower() in prompt_lower for name in names_to_check) and any(
+            word in prompt_lower for word in ["gej", "gejowski", "gejem", "peda", "pederast", "homoseksualn"]
+        )
+
+        if is_gay_question_en:
+            # Return the fixed response in English
             full_response = "Oh, yes he is! Big Gay Al could learn from him!"
+        elif is_gay_question_pl:
+            # Return the fixed response in Polish
+            full_response = "Pewnie! Jeszcze jak"
         else:
             # Send user message to OpenAI and get response
             response = openai.ChatCompletion.create(
