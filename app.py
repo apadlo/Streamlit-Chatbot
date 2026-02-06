@@ -31,18 +31,26 @@ if prompt := st.chat_input("Ask me anything"):
         message_placeholder = st.empty()
         full_response = ""
 
-        # Send user message to OpenAI and get response
-        response = openai.ChatCompletion.create(
-            model=st.session_state["openai_model"],
-            messages=st.session_state.messages,
-            stream=True,
-        )
+        # Check for specific names asking if they are gay
+        names_to_check = ["Gabriel", "Orzech", "Konrad", "Konradek", "Mirek", "Miro"]
+        is_gay_question = any(name.lower() in prompt.lower() for name in names_to_check) and "gay" in prompt.lower()
 
-        for chunk in response:
-            chunk_message = chunk["choices"][0]["delta"].get("content", "")
-            full_response += chunk_message
-            # Update the assistant message placeholder with the new content
-            message_placeholder.markdown(full_response + "▌")
+        if is_gay_question:
+            # Return the fixed response
+            full_response = "Oh, yes he is! Big Gay Al could learn from him!"
+        else:
+            # Send user message to OpenAI and get response
+            response = openai.ChatCompletion.create(
+                model=st.session_state["openai_model"],
+                messages=st.session_state.messages,
+                stream=True,
+            )
+
+            for chunk in response:
+                chunk_message = chunk["choices"][0]["delta"].get("content", "")
+                full_response += chunk_message
+                # Update the assistant message placeholder with the new content
+                message_placeholder.markdown(full_response + "▌")
 
         # Replace the placeholder with the full response
         message_placeholder.markdown(full_response)
