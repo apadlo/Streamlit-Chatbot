@@ -1,0 +1,15 @@
+services:
+  streamlit-chatbot:
+    build: .
+    ports:
+      - "8501:8501"
+    depends_on:
+      - llm
+    env_file:
+      - .env
+
+  llm:
+    provider:
+      type: model
+      options:
+        model: ${LLM_MODEL_NAME:-ai/smollm2:latest}
